@@ -133,6 +133,9 @@ var TT = TAOTAO = {
     			    				if(data && data.fun){
     			    					data.fun.call(this,node);
     			    				}
+    			    			}else{//不是叶子节点
+    			    				//点击该节点 切换折叠状态
+    			    				$(this).tree('toggle',node.target);
     			    			}
     			    		}
     			    	});

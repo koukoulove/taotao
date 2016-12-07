@@ -1,5 +1,6 @@
 package com.taotao.manage.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,12 +8,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.PageInfo;
+import com.taotao.common.bean.EasyUIResult;
 import com.taotao.common.track.Track;
-import com.taotao.manage.pojo.ItemDesc;
+import com.taotao.common.utils.Checks;
 import com.taotao.manage.pojo.ItemParam;
-import com.taotao.manage.service.ItemDescService;
 import com.taotao.manage.service.ItemParamService;
 
 @Controller
@@ -23,11 +26,27 @@ public class ItemParamController {
     private ItemParamService itemParamService;
     
     /**
+     * 新增规格参数
+     */
+    @RequestMapping(value="{itemCatId}",method=RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Void> addItemParam(@PathVariable("itemCatId") Long itemCatId,@RequestParam(value="paramData")String paramData){
+        Track.request("itemCatID is {} , paramData is {} ", itemCatId,paramData);
+        Checks.notNull(itemCatId);
+        Checks.notNull(paramData);
+        this.itemParamService.addItemParam(itemCatId, paramData);
+        ResponseEntity<Void> resp = ResponseEntity.status(HttpStatus.CREATED).build();
+        Track.response("resp ", resp);
+        return resp;
+    }
+    
+    
+    /**
      * 根据商品类目ID选择对应的规格参数模板
      */
     @RequestMapping(value="{itemCatId}",method=RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<ItemParam> queryItemCat(@PathVariable("itemCatId") Long itemCatId){
+    public ResponseEntity<ItemParam> queryItemParam(@PathVariable("itemCatId") Long itemCatId){
         Track.request("itemCatId is {} ", itemCatId);
         ItemParam model = new ItemParam();
         model.setItemCatId(itemCatId);
@@ -40,5 +59,18 @@ public class ItemParamController {
 //        }
         Track.response("result is {} ", result);
         return result;
+    }
+    
+    /**
+     * 查询规格参数模板分页列表
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<EasyUIResult> queryItemPageList(Integer page, Integer rows) {
+        Track.request("page is {},rows is {} ", page, rows);
+        PageInfo<ItemParam> pageInfo = this.itemParamService.queryPageList(page, rows);
+        EasyUIResult result = new EasyUIResult(pageInfo.getTotal(), pageInfo.getList());
+        Track.response("result is {} ", result);
+        return ResponseEntity.ok(result);
     }
 }
