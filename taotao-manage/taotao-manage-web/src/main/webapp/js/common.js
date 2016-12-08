@@ -192,10 +192,50 @@ var TT = TAOTAO = {
     },
     
     changeItemParam : function(node,formId){
-    	$.getJSON("/rest/item/param/query/itemcatid/" + node.id,function(data){
-			  if(data.status == 200 && data.data){
+    	
+   	$.ajax({
+ 		   type: "GET",
+ 		   url: "/rest/item/param/" + node.id,
+ 		   success: function(data){
+ 			  if(data){
+ 				 $("#"+formId+" .params").show();
+ 				 var paramData = JSON.parse(data.paramData);
+ 				 var html = "<ul>";
+ 				 for(var i in paramData){
+ 					 var pd = paramData[i];
+ 					 html+="<li><table>";
+ 					 html+="<tr><td colspan=\"2\" class=\"group\">"+pd.group+"</td></tr>";
+ 					 
+ 					 for(var j in pd.params){
+ 						 var ps = pd.params[j];
+ 						 html+="<tr><td class=\"param\"><span>"+ps+"</span>: </td><td><input autocomplete=\"off\" type=\"text\"/></td></tr>";
+ 					 }
+ 					 
+ 					 html+="</li></table>";
+ 				 }
+ 				 html+= "</ul>";
+ 				 $("#"+formId+" .params td").eq(1).html(html);
+ 			  }else{
+ 				 $("#"+formId+" .params").hide();
+ 				 $("#"+formId+" .params td").eq(1).empty();
+ 			  }
+ 			},
+ 		   error: function(data){
+ 				if(data.status=='400'){
+ 					$.messager.alert('提示','操作失败，'+JSON.parse(data.responseText).msg);
+ 				}else{
+ 					$.messager.alert('提示','系统异常!');
+ 				}
+ 			} 
+ 		});
+    	
+    	
+    	
+ /*   	$.getJSON("/rest/item/param/" + node.id,function(data){
+    		alert("data="+data);
+			  if(data){
 				 $("#"+formId+" .params").show();
-				 var paramData = JSON.parse(data.data.paramData);
+				 var paramData = JSON.parse(data.paramData);
 				 var html = "<ul>";
 				 for(var i in paramData){
 					 var pd = paramData[i];
@@ -215,7 +255,7 @@ var TT = TAOTAO = {
 				 $("#"+formId+" .params").hide();
 				 $("#"+formId+" .params td").eq(1).empty();
 			  }
-		  });
+		  });*/
     },
     getSelectionsIds : function (select){
     	var list = $(select);

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,11 @@ import com.taotao.common.bean.Success;
 import com.taotao.common.track.Track;
 import com.taotao.common.utils.Checks;
 import com.taotao.common.utils.TaoTaoUtils;
+import com.taotao.manage.pojo.ItemCat;
 import com.taotao.manage.pojo.ItemParam;
+import com.taotao.manage.service.ItemCatService;
 import com.taotao.manage.service.ItemParamService;
+import com.taotao.manage.vo.ItemParamVO;
 
 @Controller
 @RequestMapping("/item/param")
@@ -31,6 +36,9 @@ public class ItemParamController {
     
     @Autowired
     private ItemParamService itemParamService;
+    
+    @Autowired
+    private ItemCatService itemCatService;
     
     /**
      * 新增规格参数
@@ -94,7 +102,17 @@ public class ItemParamController {
     public ResponseEntity<EasyUIResult> queryItemPageList(Integer page, Integer rows) {
         Track.request("page is {},rows is {} ", page, rows);
         PageInfo<ItemParam> pageInfo = this.itemParamService.queryPageList(page, rows);
-        EasyUIResult result = new EasyUIResult(pageInfo.getTotal(), pageInfo.getList());
+        List<ItemParamVO> voList = new ArrayList<ItemParamVO>();
+        if(CollectionUtils.isNotEmpty(pageInfo.getList())){
+            for (ItemParam itemParam : pageInfo.getList()) {
+                ItemParamVO vo = new ItemParamVO();
+                BeanUtils.copyProperties(itemParam, vo);
+                ItemCat itemCat = itemCatService.queryById(itemParam.getItemCatId());
+                vo.setItemCatName(itemCat.getName());
+                voList.add(vo);
+            }
+        }
+        EasyUIResult result = new EasyUIResult(pageInfo.getTotal(), voList);
         Track.response("result is {} ", result);
         return ResponseEntity.ok(result);
     }

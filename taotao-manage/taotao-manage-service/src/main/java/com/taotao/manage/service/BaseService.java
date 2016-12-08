@@ -89,8 +89,6 @@ public abstract class BaseService<T extends BasePojo> {
      * @return
      */
     public int saveSelective(T record) {
-       record.setCreated(new Date());
-       record.setUpdated(record.getCreated());
        return this.mapper.insertSelective(record);
     }
 
@@ -100,7 +98,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int update(T record) {
+    public int updateById(T record) {
         return this.mapper.updateByPrimaryKey(record);
     }
 
@@ -110,8 +108,8 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int updateSelective(T record) {
-        record.setUpdated(new Date());
+    public int updateSelectiveById(T record) {
+        //record.setUpdated(new Date());
         return this.mapper.updateByPrimaryKeySelective(record);
     }
     

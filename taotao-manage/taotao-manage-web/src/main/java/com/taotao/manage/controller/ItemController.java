@@ -49,10 +49,10 @@ public class ItemController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Void> addItem(Item item, String desc) {
-        Track.request("item is {},desc is {}", item, desc);
+    public ResponseEntity<Void> addItem(Item item, String desc,String itemParams) {
+        Track.request("item is {},desc is {},itemParams is {}", item, desc,itemParams);
         validateItemParams(item);
-        this.itemService.saveItem(item, desc);
+        this.itemService.saveItem(item, desc,itemParams);
         ResponseEntity<Void> resp = ResponseEntity.status(HttpStatus.CREATED).build();
         Track.response("resp is {}", resp);
         return resp;
@@ -62,10 +62,10 @@ public class ItemController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseEntity<Void> updateItem(Item item, String desc) {
-        Track.request("item is {},desc is {}", item, desc);
+    public ResponseEntity<Void> updateItem(Item item, String desc,String itemParams) {
+        Track.request("item is {},desc is {},itemParams is {}", item, desc,itemParams);
         validateItemParams(item);
-        this.itemService.updateItem(item, desc);
+        this.itemService.updateItem(item, desc,itemParams);
         ResponseEntity<Void> resp = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         Track.response("resp is {}", resp);
         return resp;
