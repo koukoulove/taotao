@@ -80,7 +80,7 @@ var TT = TAOTAO = {
         			}
         		}
         	}
-        	$(e).click(function(){
+        	$(e).unbind('click').click(function(){
         		var form = $(this).parentsUntil("form").parent("form");
         		KindEditor.editor(TT.kingEditorParams).loadPlugin('multiimage',function(){
         			var editor = this;

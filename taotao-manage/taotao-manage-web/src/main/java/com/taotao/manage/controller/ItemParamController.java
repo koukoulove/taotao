@@ -1,6 +1,10 @@
 package com.taotao.manage.controller;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
 import com.taotao.common.bean.EasyUIResult;
+import com.taotao.common.bean.Message;
+import com.taotao.common.bean.Success;
 import com.taotao.common.track.Track;
 import com.taotao.common.utils.Checks;
+import com.taotao.common.utils.TaoTaoUtils;
 import com.taotao.manage.pojo.ItemParam;
 import com.taotao.manage.service.ItemParamService;
 
@@ -39,6 +46,24 @@ public class ItemParamController {
         Track.response("resp ", resp);
         return resp;
     }
+    
+    
+    /**
+     * 根据IDS删除规格参数 物理删除
+     */
+    @RequestMapping(value="delete",method=RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Message> queryItemParam(String ids){
+        Track.request("ids is {} ", ids);
+        Checks.notNull(ids);
+        this.itemParamService.deleteByIds(ItemParam.class, "id", TaoTaoUtils.idsToList(ids));
+        Message message = new Success();
+        ResponseEntity<Message> result = ResponseEntity.ok(message);
+        Track.response("result is {} ", result);
+        return result;
+    }
+    
+
     
     
     /**
