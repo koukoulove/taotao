@@ -5,9 +5,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taotao.common.bean.PicUploadResult;
+
 @Table(name = "tb_item")
 public class Item extends BasePojo {
 
+    
+    public static void main(String[] args) {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        PicUploadResult pic = new PicUploadResult();
+        pic.setError(111);
+        pic.setHeight("100");
+        pic.setUrl("123213213213213");
+        pic.setWidth("200");
+        try {
+            String writeValueAsString = mapper.writeValueAsString(pic);
+            System.out.println(writeValueAsString);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
