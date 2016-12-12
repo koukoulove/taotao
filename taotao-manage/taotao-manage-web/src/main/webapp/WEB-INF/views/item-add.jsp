@@ -110,9 +110,7 @@
 		   url: "/rest/item",
 		   data: $("#itemAddForm").serialize(), //表单序列化，将所有的输入内容转化成K/V数据格式
 		   success: function(data){
-				if(data.code=='201'){
-					$.messager.alert('提示','新增商品成功!');
-				}
+				$.messager.alert('提示','新增商品成功!');
 			},
 		   error: function(data){
 				if(data.status=='400'){

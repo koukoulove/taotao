@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
 import com.taotao.common.bean.EasyUIResult;
-import com.taotao.common.bean.Message;
-import com.taotao.common.bean.Success;
 import com.taotao.common.enu.ITEM_STATUS;
 import com.taotao.common.track.Track;
 import com.taotao.common.utils.Checks;
@@ -53,7 +50,7 @@ public class ItemController {
         Track.request("item is {},desc is {},itemParams is {}", item, desc,itemParams);
         validateItemParams(item);
         this.itemService.saveItem(item, desc,itemParams);
-        ResponseEntity<Void> resp = ResponseEntity.status(HttpStatus.CREATED).build();
+        ResponseEntity<Void> resp = ResponseEntity.ok().build();
         Track.response("resp is {}", resp);
         return resp;
     }
@@ -66,7 +63,7 @@ public class ItemController {
         Track.request("item is {},desc is {},itemParams is {}", item, desc,itemParams);
         validateItemParams(item);
         this.itemService.updateItem(item, desc,itemParams);
-        ResponseEntity<Void> resp = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        ResponseEntity<Void> resp = ResponseEntity.ok().build();
         Track.response("resp is {}", resp);
         return resp;
     }
@@ -96,11 +93,11 @@ public class ItemController {
     }
 
     /**
-     * 删除 上架 下架 商品
+     * 删除 /上架 /下架 商品
      */
     @RequestMapping(value = "operation", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Message> operatorItem(String ids, String op) {
+    public ResponseEntity<Void> operatorItem(String ids, String op) {
         Track.request("ids is {},op is {}", ids, op);
         List<Object> idsList = new ArrayList<Object>();
         String[] split = ids.split(",");
@@ -116,9 +113,7 @@ public class ItemController {
             record.setStatus(Integer.valueOf(ITEM_STATUS.ON_LINE.getCode()));
         }
         this.itemService.updateSelectiveByIds(record, "id", idsList);
-        Message message = new Success();
-        ResponseEntity<Message> resp = ResponseEntity.ok(message);
-        
+        ResponseEntity<Void> resp = ResponseEntity.ok().build();
         Track.response("resp is {}", resp);
         return resp;
     }

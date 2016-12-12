@@ -2,13 +2,11 @@ package com.taotao.manage.controller;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
 import com.taotao.common.bean.EasyUIResult;
-import com.taotao.common.bean.Message;
-import com.taotao.common.bean.Success;
+import com.taotao.common.exception.Exceptions;
+import com.taotao.common.exception.TaoTaoErrorCodes;
 import com.taotao.common.track.Track;
 import com.taotao.common.utils.Checks;
 import com.taotao.common.utils.TaoTaoUtils;
@@ -49,30 +47,44 @@ public class ItemParamController {
         Track.request("itemCatID is {} , paramData is {} ", itemCatId,paramData);
         Checks.notNull(itemCatId);
         Checks.notNull(paramData);
-        this.itemParamService.addItemParam(itemCatId, paramData);
-        ResponseEntity<Void> resp = ResponseEntity.status(HttpStatus.CREATED).build();
+        if(this.itemParamService.addItemParam(itemCatId, paramData)!=1){
+            throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+        }
+        ResponseEntity<Void> resp = ResponseEntity.ok().build();
         Track.response("resp ", resp);
         return resp;
     }
-    
+    /**
+     * 更新规格参数
+     * 
+     */
+    @RequestMapping(value="{id}",method=RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<Void> updateItemParam(@PathVariable("id") Long id,@RequestParam(value="paramData")String paramData){
+        Track.request("id is {} , paramData is {} ", id,paramData);
+        Checks.notNull(id);
+        Checks.notNull(paramData);
+        if(this.itemParamService.updateItemParam(id, paramData)!=1){
+            throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+        }
+        ResponseEntity<Void> resp = ResponseEntity.ok().build();
+        Track.response("resp ", resp);
+        return resp;
+    }
     
     /**
      * 根据IDS删除规格参数 物理删除
      */
     @RequestMapping(value="delete",method=RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Message> queryItemParam(String ids){
+    public ResponseEntity<Void> queryItemParam(String ids){
         Track.request("ids is {} ", ids);
         Checks.notNull(ids);
         this.itemParamService.deleteByIds(ItemParam.class, "id", TaoTaoUtils.idsToList(ids));
-        Message message = new Success();
-        ResponseEntity<Message> result = ResponseEntity.ok(message);
+        ResponseEntity<Void> result = ResponseEntity.ok().build();
         Track.response("result is {} ", result);
         return result;
     }
-    
-
-    
     
     /**
      * 根据商品类目ID选择对应的规格参数模板
@@ -84,12 +96,7 @@ public class ItemParamController {
         ItemParam model = new ItemParam();
         model.setItemCatId(itemCatId);
         ItemParam itemParam = this.itemParamService.queryOne(model);
-        ResponseEntity<ItemParam> result = null;
-//        if(null == itemParam){
-//            result = ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }else{
-            result = ResponseEntity.ok(itemParam);
-//        }
+        ResponseEntity<ItemParam> result = ResponseEntity.ok(itemParam);
         Track.response("result is {} ", result);
         return result;
     }

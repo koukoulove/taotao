@@ -207,11 +207,9 @@
 			url: "/rest/item/operation",
 			data: params, //表单序列化，将所有的输入内容转化成K/V数据格式
 			success: function(data){
-				if(data.code=='200'){
-					$.messager.alert('提示','操作成功!',undefined,function(){
-						$("#itemList").datagrid("reload");
-					});
-				}
+				$.messager.alert('提示','操作成功!',undefined,function(){
+					$("#itemList").datagrid("reload");
+				});
 			},
 			error: function(data){
 				if(data.status=='400'){

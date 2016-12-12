@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.taotao.common.exception.Exceptions;
+import com.taotao.common.exception.TaoTaoErrorCodes;
 import com.taotao.common.track.Track;
 import com.taotao.manage.mapper.ItemParamMapper;
 import com.taotao.manage.pojo.Item;
@@ -36,5 +38,13 @@ public class ItemParamService extends BaseService<ItemParam>{
         record.setItemCatId(itemCatId);
         record.setParamData(paramData);
         return this.saveSelective(record);
+    }
+
+    public int updateItemParam(Long id, String paramData) {
+        Track.service("id is {} ,paramData is {} ", id,paramData);
+        ItemParam record = new ItemParam();
+        record.setId(id);
+        record.setParamData(paramData);
+        return this.updateSelectiveById(record);
     }
 }

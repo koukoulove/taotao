@@ -14,7 +14,7 @@
         </tr>
     </thead>
 </table>
-<div id="itemEditWindow" class="easyui-window" title="编辑商品规格参数" data-options="modal:true,closed:true,iconCls:'icon-save',href:'/rest/page/item-edit'" style="width:80%;height:80%;padding:10px;">
+<div id="itemParamEditWindow" class="easyui-window" title="编辑商品规格参数" data-options="modal:true,closed:true,iconCls:'icon-save',href:'/rest/page/item-param-edit'" style="width:80%;height:80%;padding:10px;">
 </div>
 <script>
 
@@ -55,7 +55,51 @@
         text:'编辑',
         iconCls:'icon-edit',
         handler:function(){
-        	$.messager.alert('提示','该功能未实现!');
+        	
+        	var ids = getSelectionsIds();
+        	if(ids.length == 0){
+        		$.messager.alert('提示','必须选择一条记录才能编辑!');
+        		return ;
+        	}
+        	if(ids.indexOf(',') > 0){
+        		$.messager.alert('提示','只能选择一条记录!');
+        		return ;
+        	}
+        	
+        	//$.messager.alert('提示','该功能未实现!');
+        	var data = $("#itemParamList").datagrid("getSelections")[0];
+        	$("#itemParamEditWindow").window({
+        		onLoad :function(){
+		        	$("#itemeParamEditForm").form("load",data);
+					//[{"group":"主体","params":["书名","作者","价格","页数","字体"]}]
+		        	//回显商品规格
+					var paramData = JSON.parse(data.paramData);
+					var temple="";
+		        	for(var i in paramData){
+						var pd = paramData[i];
+						temple +="<li class=\"param\"><ul>"+
+							"<li>"+
+								"<input class=\"easyui-textbox\" style=\"width: 150px;\" name=\"group\" value=\""+pd.group+"\"/>"+
+								"<a href=\"javascript:void(0)\" class=\"easyui-linkbutton addParam\" onclick=\"addParam(this)\"  title=\"添加参数\" data-options=\"plain:true,iconCls:\'icon-add\'\"></a>"+
+								"<a href=\"javascript:void(0)\" class=\"easyui-linkbutton delParamGroup\" onclick=\"delParamGroup(this)\" title=\"删除\" data-options=\"plain:true,iconCls:\'icon-cancel\'\"></a>"+	
+							"</li>";
+									
+						for(var j in pd.params){
+							temple += 
+							"<li>"+
+								"<span>|-------</span>  "+
+								"<input style=\"width: 150px;\" class=\"easyui-textbox\" name=\"param\" value=\""+pd.params[j]+"\"/>&nbsp;   "+
+								"<a href=\"javascript:void(0)\" class=\"easyui-linkbutton delParam\" onclick=\"delParam(this)\" title=\"删除\" data-options=\"plain:true,iconCls:\'icon-cancel\'\"></a>"+
+							"</li>";
+						}
+			        	temple += "</ul></li>";
+		        	}
+		        	
+					$("#itemParamEditTable .addGroup").parent().parent().append(temple);
+					$.parser.parse($("#itemParamEditTable .addGroup").parent().parent());
+        		}
+        	}).window("open");
+        	
         }
     },{
         text:'删除',
@@ -81,11 +125,9 @@
         				url: "/rest/item/param/delete",
         				data: params,  
         				success: function(data){
-        					if(data.code=='200'){
         						$.messager.alert('提示','操作成功!',undefined,function(){
         							$("#itemParamList").datagrid("reload");
         						});
-        					}
         				},
         				error: function(data){
         					if(data.status=='400'){

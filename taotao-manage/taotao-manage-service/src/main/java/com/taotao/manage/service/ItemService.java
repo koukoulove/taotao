@@ -10,6 +10,8 @@ import com.github.abel533.entity.Example;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.taotao.common.enu.ITEM_STATUS;
+import com.taotao.common.exception.Exceptions;
+import com.taotao.common.exception.TaoTaoErrorCodes;
 import com.taotao.common.track.Track;
 import com.taotao.manage.mapper.ItemMapper;
 import com.taotao.manage.pojo.Item;
@@ -25,26 +27,59 @@ public class ItemService extends BaseService<Item>{
     private ItemParamItemService itemParamItemService;
     @Autowired
     private ItemMapper itemMapper;
-    
+    /**
+     * 新增商品信息
+     */
     public void saveItem(Item item, String desc,String itemParams) {
        Track.service("item is {}, desc is {},itemParams is {} ", item,desc,itemParams);
+       //商品表
        item.setStatus(Integer.valueOf(ITEM_STATUS.NORMAL.getCode()));
        item.setId(null);
-       this.save(item);
-       
+       if(this.save(item) != 1){
+           throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+       }
+       //商品描述表
        ItemDesc record = new ItemDesc();
        record.setItemId(item.getId());
        record.setItemDesc(desc);
-       this.itemDescService.saveSelective(record);
-       
+       if(this.itemDescService.saveSelective(record) != 1){
+           throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+       }
+       //商品规格参数表
        ItemParamItem itemParamItem = new ItemParamItem();
        itemParamItem.setId(null);
        itemParamItem.setParamData(itemParams);
        itemParamItem.setItemId(item.getId());
-       this.itemParamItemService.saveSelective(itemParamItem);
+       if(this.itemParamItemService.saveSelective(itemParamItem) != 1){
+           throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+       }
     }
 
-    
+    /**
+     * 更新商品信息
+     */
+    public void updateItem(Item item, String desc,String itemParams) {
+        Track.service("item is {}, desc is {}, itemParams is {} ", item,desc,itemParams);
+        item.setStatus(null);
+        //商品表
+        if(this.updateSelectiveById(item) != 1){
+            throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+        }
+        //商品描述表
+        ItemDesc record = new ItemDesc();
+        record.setItemId(item.getId());
+        record.setItemDesc(desc);
+        if(this.itemDescService.updateSelectiveById(record) != 1){
+            throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+        }
+        //商品规格参数表
+        if(this.itemParamItemService.updateItemParamItemByItemId(item.getId(), itemParams) != 1){
+            throw Exceptions.fail(TaoTaoErrorCodes.OP_FAILURE);
+        }
+    }
+    /**
+     * 查询商品分页信息
+     */
     public PageInfo<Item> queryPageList(Integer page,Integer rows){
         Track.service("page is {}, rows is {}", page,rows);
         PageHelper.startPage(page, rows);
@@ -52,19 +87,5 @@ public class ItemService extends BaseService<Item>{
         ex.setOrderByClause("id desc");
         List<Item> list = this.itemMapper.selectByExample(ex);
         return new PageInfo<Item>(list);
-    }
-
-
-    public void updateItem(Item item, String desc,String itemParams) {
-        Track.service("item is {}, desc is {}, itemParams is {} ", item,desc,itemParams);
-        item.setStatus(null);
-        super.updateSelectiveById(item);
-        
-        ItemDesc record = new ItemDesc();
-        record.setItemId(item.getId());
-        record.setItemDesc(desc);
-        this.itemDescService.updateSelectiveById(record);
-       
-        this.itemParamItemService.updateItemParamItemByItemId(item.getId(), itemParams);
     }
 }
