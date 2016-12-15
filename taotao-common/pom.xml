@@ -64,5 +64,17 @@
 	  <artifactId>commons-fileupload</artifactId>
 	  <version>1.3.1</version>
 	</dependency>
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>net.jodah</groupId>
+	  <artifactId>expiringmap</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>com.rabbitmq</groupId>
+	  <artifactId>amqp-client</artifactId>
+	</dependency>		
   </dependencies>
 </project>

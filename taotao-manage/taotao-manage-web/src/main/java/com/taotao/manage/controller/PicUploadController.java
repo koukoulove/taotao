@@ -65,16 +65,14 @@ public class PicUploadController {
         fileUploadResult.setError(isLegal ? 0 : 1);
 
         // 文件新路径
-        String filePath = getFilePath(uploadFile.getOriginalFilename());
+        String filePath = propertieService.getFilePath(uploadFile.getOriginalFilename());
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Pic file upload .[{}] to [{}] .", uploadFile.getOriginalFilename(), filePath);
         }
 
         // 生成图片的绝对引用地址
-        String picUrl = StringUtils.replace(StringUtils.substringAfter(filePath, propertieService.REPOSITORY_PATH),
-                "\\", "/");
-        fileUploadResult.setUrl(propertieService.IMAGE_BASE_URL + picUrl);
+        fileUploadResult.setUrl(propertieService.getPicUrl(filePath));
 
         File newFile = new File(filePath);
 
@@ -105,7 +103,7 @@ public class PicUploadController {
         return mapper.writeValueAsString(fileUploadResult);
     }
 
-    //E:\0114\taotao-upload\images\2016\01\17\2016011704532743905941.jpg
+/*    //E:\0114\taotao-upload\images\2016\01\17\2016011704532743905941.jpg
     private String getFilePath(String sourceFileName) {
         String baseFolder = propertieService.REPOSITORY_PATH + File.separator + "images";
         Date nowDate = new Date();
@@ -122,6 +120,6 @@ public class PicUploadController {
         String fileName = new DateTime(nowDate).toString("yyyyMMddhhmmssSSSS")
                 + RandomUtils.nextInt(100, 9999) + "." + StringUtils.substringAfterLast(sourceFileName, ".");
         return fileFolder + File.separator + fileName;
-    }
+    }*/
 
 }

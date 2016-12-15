@@ -56,4 +56,5 @@
 		<property name="accessEnable" value="${track.access}" />
 		<property name="serviceEnable" value="${track.service}" />
 	</bean>
+	
 </beans>

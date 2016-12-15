@@ -1,11 +1,8 @@
 package com.taotao.manage.service;
 
-
-import org.springframework.stereotype.Service;
-
 import com.taotao.manage.pojo.ItemDesc;
 
-@Service
-public class ItemDescService extends BaseService<ItemDesc>{
+
+public interface ItemDescService extends BaseService<ItemDesc>{
 
 }

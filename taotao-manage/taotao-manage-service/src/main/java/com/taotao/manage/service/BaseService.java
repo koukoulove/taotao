@@ -1,20 +1,12 @@
 package com.taotao.manage.service;
 
-import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.github.abel533.entity.Example;
-import com.github.abel533.mapper.Mapper;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.taotao.manage.pojo.BasePojo;
 
-public abstract class BaseService<T extends BasePojo> {
+public interface BaseService<T extends BasePojo>{
 
-    @Autowired
-    private Mapper<T> mapper;
 
     /**
      * 根据id查询数据
@@ -22,18 +14,14 @@ public abstract class BaseService<T extends BasePojo> {
      * @param id
      * @return
      */
-    public T queryById(Long id) {
-        return this.mapper.selectByPrimaryKey(id);
-    }
+    public T queryById(Long id);
 
     /**
      * 查询所有数据
      * 
      * @return
      */
-    public List<T> queryAll() {
-        return this.mapper.select(null);
-    }
+    public List<T> queryAll() ;
 
     /**
      * 根据条件查询一条数据，如果有多条数据会抛出异常
@@ -41,9 +29,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public T queryOne(T record) {
-        return this.mapper.selectOne(record);
-    }
+    public T queryOne(T record) ;
 
     /**
      * 根据条件查询数据列表
@@ -51,10 +37,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public List<T> queryListByWhere(T record) {
-        return this.mapper.select(record);
-    }
-
+    public List<T> queryListByWhere(T record) ;
     /**
      * 分页查询
      * 
@@ -63,12 +46,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public PageInfo<T> queryPageListByWhere(Integer page, Integer rows, T record) {
-        // 设置分页条件
-        PageHelper.startPage(page, rows);
-        List<T> list = this.queryListByWhere(record);
-        return new PageInfo<T>(list);
-    }
+    public PageInfo<T> queryPageListByWhere(Integer page, Integer rows, T record) ;
 
     /**
      * 新增数据，返回成功的条数
@@ -76,11 +54,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int save(T record) {
-        record.setCreated(new Date());
-        record.setUpdated(record.getCreated());
-        return this.mapper.insert(record);
-    }
+    public int save(T record) ;
 
     /**
      * 新增数据，使用不为null的字段，返回成功的条数
@@ -88,9 +62,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int saveSelective(T record) {
-       return this.mapper.insertSelective(record);
-    }
+    public int saveSelective(T record) ;
 
     /**
      * 修改数据，返回成功的条数
@@ -98,9 +70,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int updateById(T record) {
-        return this.mapper.updateByPrimaryKey(record);
-    }
+    public int updateById(T record) ;
 
     /**
      * 修改数据，使用不为null的字段，返回成功的条数
@@ -108,20 +78,12 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int updateSelectiveById(T record) {
-        //record.setUpdated(new Date());
-        return this.mapper.updateByPrimaryKeySelective(record);
-    }
+    public int updateSelectiveById(T record) ;
     
     /**
      * 根据id批量更新数据
      */
-    public int updateSelectiveByIds(T record, String property, List<Object> values) {
-        Example example = new Example(record.getClass());
-        example.createCriteria().andIn(property, values);
-        record.setUpdated(new Date());
-        return this.mapper.updateByExampleSelective(record, example);
-    }
+    public int updateSelectiveByIds(T record, String property, List<Object> values) ;
     
 
     /**
@@ -130,9 +92,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param id
      * @return
      */
-    public int deleteById(Long id) {
-        return this.mapper.deleteByPrimaryKey(id);
-    }
+    public int deleteById(Long id) ;
 
     /**
      * 批量删除
@@ -141,11 +101,7 @@ public abstract class BaseService<T extends BasePojo> {
      * @param values
      * @return
      */
-    public int deleteByIds(Class<T> clazz, String property, List<Object> values) {
-        Example example = new Example(clazz);
-        example.createCriteria().andIn(property, values);
-        return this.mapper.deleteByExample(example);
-    }
+    public int deleteByIds(Class<T> clazz, String property, List<Object> values) ;
     
     /**
      * 根据条件做删除
@@ -153,8 +109,5 @@ public abstract class BaseService<T extends BasePojo> {
      * @param record
      * @return
      */
-    public int deleteByWhere(T record) {
-        return this.mapper.delete(record);
-    }
-
+    public int deleteByWhere(T record) ;
 }

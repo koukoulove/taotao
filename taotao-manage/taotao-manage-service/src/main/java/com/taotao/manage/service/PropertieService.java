@@ -1,15 +1,11 @@
 package com.taotao.manage.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-@Service
-public class PropertieService {
-
-    @Value("${REPOSITORY_PATH}")
-    public String REPOSITORY_PATH;
-
-    @Value("${IMAGE_BASE_URL}")
-    public String IMAGE_BASE_URL;
-
+public interface PropertieService {
+    
+    // 文件新路径
+    public String getFilePath(String sourceFileName);
+    
+    // 生成图片的绝对引用地址
+    public String getPicUrl(String filePath);
 }
