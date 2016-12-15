@@ -243,8 +243,22 @@ public abstract class WebUtils {
         }
 
         conn.setRequestMethod(method);
+        /**
+         * httpUrlConnection.setDoOutput(true);以后就可以使用conn.getOutputStream().write() 
+         * post请求（比如：文件上传）需要往服务区传输大量的数据，这些数据是放在http的body里面的，因此需要在建立连接以后，往服务端写数据。  
+         * get请求用不到conn.getOutputStream()，因为参数直接追加在地址后面，因此默认是false。  
+         * */
+        conn.setDoOutput(true);//post请求使用
+        
+        /**
+         * httpUrlConnection.setDoInput(true);以后就可以使用conn.getInputStream().read(); 
+         * 因为总是使用conn.getInputStream()获取服务端的响应，因此默认值是true。
+         */
         conn.setDoInput(true);
-        conn.setDoOutput(true);
+        
+        // Post 请求不能使用缓存 
+        //httpUrlConnection.setUseCaches(false);
+        
         conn.setRequestProperty("Accept", "text/xml,text/javascript,text/html,application/json");
         conn.setRequestProperty("User-Agent", "aop-sdk-java");
         conn.setRequestProperty("Content-Type", ctype);
