@@ -1,4 +1,4 @@
-package com.taotao.common.utils.httpClient;
+package com.taotao.common.utils.http;
 	
 	/**
 	 * 枚举HttpMethods方法

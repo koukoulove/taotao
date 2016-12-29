@@ -1,4 +1,4 @@
-package com.taotao.common.utils.httpClient;
+package com.taotao.common.utils.http;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

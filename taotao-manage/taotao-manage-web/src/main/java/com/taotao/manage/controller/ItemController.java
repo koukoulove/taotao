@@ -17,9 +17,6 @@ import com.taotao.common.bean.EasyUIResult;
 import com.taotao.common.enu.ITEM_STATUS;
 import com.taotao.common.track.Track;
 import com.taotao.common.utils.Checks;
-import com.taotao.common.utils.httpClient.HttpClientUtil;
-import com.taotao.common.utils.httpClient.HttpConfig;
-import com.taotao.common.utils.httpClient.HttpProcessException;
 import com.taotao.manage.pojo.Item;
 import com.taotao.manage.pojo.ItemCat;
 import com.taotao.manage.service.ItemCatService;
@@ -92,16 +89,6 @@ public class ItemController {
         }
         EasyUIResult result = new EasyUIResult(pageInfo.getTotal(), itemVOList);
         Track.response("result is {} ", result);
-        
-        String resp;
-        try {
-            resp = HttpClientUtil.get(HttpConfig.custom().url("https://114.55.137.252/fund-app/crowdFunding/available/verify?mobile=11111"));
-            System.out.println(resp);
-        } catch (HttpProcessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
         return ResponseEntity.ok(result);
     }
 
